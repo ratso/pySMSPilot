@@ -1,7 +1,0 @@
-Python class with Implementation for SMS sending gateway API http://www.smspilot.ru/
-You need regisration and API-Key to start using it. We use some features from API 2.1.
-API provider gives some free sms for testing purposes, henceforward you need to pay some
-fee for them. Prices provided on their site.
-
-Класс имлементации использования API (версии 2.x) сайта http://www.smspilot.ru/ для отправки SMS рассылок.
-Для отправки смс необходима регистрация на сайте. Провайдер предоставляет несколько бесплатный смс для тестирования. Но в дальнейшем нужно оплачивать отправку каждого смс. Прайсы на сайте. По России недорого. Ок. 30 копеек за смс на сегодня.
