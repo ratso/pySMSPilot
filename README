@@ -1,7 +1,38 @@
+Module name: pySMSPilot
+Copyright (c) 2012 by Stanislav Sokolov aka Ratso
+
+
+Класс имлементации использования API (версии 2.x) сайта http://www.smspilot.ru/ для отправки SMS рассылок.
+Для отправки смс необходима регистрация на сайте. Провайдер предоставляет несколько бесплатный смс для тестирования. Но в дальнейшем нужно оплачивать отправку каждого смс. Прайсы на сайте. По России недорого. Ок. 30 копеек за смс на сегодня.
+
+Инструкции
+1. Подключить модуль:
+import smspilot
+2. Инициализировать класс API-ключом:
+Pilot = smspilot.Sender(api)
+3. Добавим одно или несколько sms вот так:
+Pilot.addSMS("Номер телефона", u"SMS сообщение", u"Imya Otpravitelya")
+Note: номер телефона должен быть в формате 7xxxxxxxxxx
+Note: Imya Otpravitelya - имя отправителя может содежать только латинские буквы, точки и тире, длинна мин 3 символа, макс - 11
+4. Запускаем комманду отправки:
+Result = Pilot.send()
+Будет возвращен объект с результатами отправки. Больше информации см. http://www.smspilot.ru/apikey.php
+
 Python class with Implementation for SMS sending gateway API http://www.smspilot.ru/
 You need regisration and API-Key to start using it. We use some features from API 2.1.
 API provider gives some free sms for testing purposes, henceforward you need to pay some
 fee for them. Prices provided on their site.
 
-Класс имлементации использования API (версии 2.x) сайта http://www.smspilot.ru/ для отправки SMS рассылок.
-Для отправки смс необходима регистрация на сайте. Провайдер предоставляет несколько бесплатный смс для тестирования. Но в дальнейшем нужно оплачивать отправку каждого смс. Прайсы на сайте. По России недорого. Ок. 30 копеек за смс на сегодня.
+Class usage
+1. Include it with:
+import smspilot
+2. Initilize class with your API-key:
+Pilot = smspilot.Sender(api)
+3. Add some sms messages with command:
+Pilot.addSMS("Phone number", u"SMS message", u"Sender name")
+Note: phone number must be in format 7xxxxxxxxxx
+Note: sender name must contain only latin letters dots and dashes, min length 3 letters, max - 11
+4. Run sending command with:
+Result = Pilot.send()
+Object with sending results will be returned. More info look at http://www.smspilot.ru/apikey.php
+
