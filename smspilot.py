@@ -3,7 +3,7 @@
 '''
 SMSPilot.ru API 2.x Usage Implementation
 by Stanislav Sokolov aka Ratso
-v. 1.0
+v. 1.1
 '''
 
 import json
@@ -12,17 +12,17 @@ import re
 import random
 
 
-class SenderException(Exception):
-    pass
-
-
 class Sender:
     service_url = u"http://smspilot.ru/api2.php"
     defaultSender = u"Friend"
+    headers = {
+        'Content-type': 'application/json',
+        'Accept': 'text/plain'
+    }
 
     def __init__(self, api_key):
         if not api_key:
-            raise SenderException("API Key is not defined")
+            raise Exception(u"API Key is not defined")
         self.api = api_key
         self.messages = []
 
@@ -36,13 +36,13 @@ class Sender:
 
     def addSMS(self, phone, body, sender=None):
         if not self.checkPhone(phone):
-            raise Exception("Not valid phone number")
+            raise Exception(u"Not valid phone number")
         if len(body) == 0:
-            raise Exception("Too short message")
+            raise Exception(u"Too short message")
         if sender == None:
             sender = self.defaultSender
         if not self.checkSender(sender):
-            raise Exception("Invalid sender name or phone")
+            raise Exception(u"Invalid sender name or phone")
         message = {
             u"id": random.choice(range(1, 9999)),
             u"from": sender,
@@ -52,22 +52,75 @@ class Sender:
         self.messages.append(message)
         return True
 
+    def batchsend(self, phones, body, sender=None, resetQueue=True):
+        if phones == None:
+            raise Exception(u"No phones in list")
+        if resetQueue:
+            self.messages = []
+        for phone in phones:
+            self.addSMS(phone, body, sender)
+
+    def callServer(self, data):
+        request = urllib2.Request(
+            self.service_url,
+            json.dumps(data),
+            headers=self.headers
+        )
+        Result = urllib2.urlopen(request)
+        return json.loads(Result.read())
+
     def send(self):
         if len(self.messages) == 0:
-            raise  Exception("No messages to send. Add one first")
+            raise  Exception(u"No messages to send. Add one first")
         data = {
             u"apikey": self.api,
             u"send": self.messages
         }
-        rheaders = {
-            'Content-type': 'application/json',
-            'Accept': 'text/plain'
-        }
-        request = urllib2.Request(
-            self.service_url,
-            json.dumps(data),
-            headers=rheaders
-        )
-        Result = urllib2.urlopen(request)
+        Result = self.callServer(data)
         self.messages = []
-        return json.loads(Result.read())
+        return Result
+
+    def checkStatus(self, server_ids):
+        if server_ids == None:
+            raise Exception(u"Ids list is empty")
+        check_ids = []
+        for server_id in server_ids:
+            if isinstance(server_id, int):
+                check_ids.append({u"server_id": server_id})
+
+        data = {
+            u"apikey": self.api,
+            u"check": check_ids
+        }
+        return self.callServer(data)
+
+    def checkPacketStatus(self, server_packet_id):
+        if not server_packet_id.isdigit():
+            raise  Exception(u"server_packet_id must be integer!")
+        data = {
+            u"apikey": self.api,
+            u"check": True,
+            u"server_packet_id": server_packet_id
+        }
+        return self.callServer(data)
+
+    def checkBalance(self):
+        data = {
+            u"apikey": self.api,
+            u"balance": True
+        }
+        return self.callServer(data)
+
+    def userinfo(self):
+        data = {
+            u"apikey": self.api,
+            u"info": True
+        }
+        return self.callServer(data)
+
+    def getInbox(self):
+        data = {
+            u"apikey": self.api,
+            u"inbound": True
+        }
+        return self.callServer(data)
