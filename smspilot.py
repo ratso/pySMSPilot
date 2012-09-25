@@ -28,6 +28,7 @@ class Sender:
         if not api_key:
             raise Exception(u"API Key is not defined")
         self.api = api_key
+        self.messages = []
 
     def checkPhone(self, phone):
         phonePattern = re.compile(r'(^7[0-9]+)$', re.VERBOSE)
