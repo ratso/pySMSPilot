@@ -1,5 +1,5 @@
 Module name: pySMSPilot
-Copyright (c) 2012 by Stanislav Sokolov aka Ratso
+Copyright (c) 2013 by Stanislav Sokolov aka Ratso
 
 
 Класс имлементации использования API (версии 2.x) сайта http://www.smspilot.ru/ для отправки SMS рассылок.
@@ -14,6 +14,7 @@ Pilot = smspilot.Sender(api)
 Pilot.addSMS("Номер телефона", u"SMS сообщение", u"Imya Otpravitelya")
 Note: номер телефона должен быть в формате 7xxxxxxxxxx
 Note: Imya Otpravitelya - имя отправителя может содежать только латинские буквы, точки и тире, длинна мин 3 символа, макс - 11
+Note: возможность изменять имя отправителя может быть ограничена сервисом, подробнее см. условия на сайте http://www.smspilot.ru/
 4. Запускаем комманду отправки:
 Result = Pilot.send()
 Будет возвращен объект с результатами отправки. Больше информации см. http://www.smspilot.ru/apikey.php
@@ -32,6 +33,7 @@ Pilot = smspilot.Sender(api)
 Pilot.addSMS("Phone number", u"SMS message", u"Sender name")
 Note: phone number must be in format 7xxxxxxxxxx
 Note: sender name must contain only latin letters dots and dashes, min length 3 letters, max - 11
+Note: Ability to change sender name may be limited by service rules, refer to http://www.smspilot.ru/ to find out more
 4. Run sending command with:
 Result = Pilot.send()
 Object with sending results will be returned. More info look at http://www.smspilot.ru/apikey.php
