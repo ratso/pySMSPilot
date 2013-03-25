@@ -43,7 +43,7 @@ class Sender:
             raise Exception(u"Not valid phone number")
         if len(body) == 0:
             raise Exception(u"Too short message")
-        if sender == None:
+        if sender is None:
             sender = self.defaultSender
         if not self.checkSender(sender):
             raise Exception(u"Invalid sender name or phone")
@@ -57,7 +57,7 @@ class Sender:
         return True
 
     def batchsend(self, phones, body, sender=None, resetQueue=True):
-        if phones == None:
+        if phones is None:
             raise Exception(u"No phones in list")
         if resetQueue:
             self.messages = []
@@ -85,7 +85,7 @@ class Sender:
         return Result
 
     def checkStatus(self, server_ids):
-        if server_ids == None:
+        if server_ids is None:
             raise Exception(u"Ids list is empty")
         check_ids = []
         for server_id in server_ids:
