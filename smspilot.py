@@ -17,7 +17,8 @@ class Sender:
     defaultSender = u"Friend"
     headers = {
         'Content-type': 'application/json',
-        'Accept': 'text/plain'
+        'Accept': 'text/plain',
+        'User-Agent': 'PySMSPilot/1.1 (+https://github.com/ratso/pySMSPilot)'
     }
     messages = []
 
