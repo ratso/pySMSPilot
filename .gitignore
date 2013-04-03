@@ -1,0 +1,12 @@
+# Compiled files #
+*.pyc
+
+# Logs #
+*.log
+
+# Ide specific files #
+smspilot.nja
+.idea
+
+# OS generated trash #
+Thumbs.db
