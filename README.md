@@ -22,8 +22,11 @@ Pilot = smspilot.Sender(api)
 Pilot.addSMS("Номер телефона", u"SMS сообщение", u"Imya Otpravitelya")
 
 **Note:** номер телефона должен быть в формате 7xxxxxxxxxx
+
 **Note:** Imya Otpravitelya - имя отправителя может содежать только латинские буквы, точки и тире, длинна мин 3 символа, макс - 11
+
 **Note:** возможность изменять имя отправителя может быть ограничена сервисом, подробнее см. условия на сайте http://www.smspilot.ru/
+
 4. Запускаем комманду отправки:
 
 Result = Pilot.send()
@@ -55,8 +58,11 @@ Pilot = smspilot.Sender(api)
 Pilot.addSMS("Phone number", u"SMS message", u"Sender name")
 
 **Note:** phone number must be in format 7xxxxxxxxxx
+
 **Note:** sender name must contain only latin letters dots and dashes, min length 3 letters, max - 11
+
 **Note:** Ability to change sender name may be limited by service rules, refer to http://www.smspilot.ru/ to find out more
+
 4. Run sending command with:
 
 Result = Pilot.send()
