@@ -1,15 +1,14 @@
 # -*- coding: utf-8 *-*
-# Filename: smspilot.py
+# Filename: Sender.py
 '''
 SMSPilot.ru API 2.x Usage Implementation
 by Stanislav Sokolov aka Ratso
-v. 1.1
+v. 1.2
 '''
 
 import json
 import urllib2
 import re
-import random
 
 
 class Sender:
@@ -18,7 +17,7 @@ class Sender:
     headers = {
         'Content-type': 'application/json',
         'Accept': 'text/plain',
-        'User-Agent': 'PySMSPilot/1.1 (+https://github.com/ratso/pySMSPilot)'
+        'User-Agent': 'PySMSPilot/1.2 (+https://github.com/ratso/pySMSPilot)'
     }
     messages = []
 
@@ -31,39 +30,50 @@ class Sender:
         self.api = api_key
         self.messages = []
 
-    def checkPhone(self, phone):
+    def resetQueue(self):
+        self.messages = []
+        return self;
+
+    def _checkPhone(self, phone):
         phonePattern = re.compile(r'(^7[0-9]+)$', re.VERBOSE)
         return phone is not None and phonePattern.search(phone)
 
-    def checkSender(self, sender):
+    def _checkSender(self, sender):
         regxPattern = re.compile(r'^[a-zA-Z.\-\d]{3,11}$', re.VERBOSE)
         return regxPattern.search(sender)
 
-    def addSMS(self, phone, body, sender=None):
-        if not self.checkPhone(phone):
+    def addSMS(self, sms_id, phone, body, sender=None, send_datetime=None):
+        if not isinstance(sms_id, int):
+            raise Exception(u"sms_id must be integer")
+        if any(index['id'] == sms_id for index in self.messages):
+            raise Exception(u"SMS with this id already queried")
+        if not self._checkPhone(phone):
             raise Exception(u"Not valid phone number")
         if len(body) == 0:
             raise Exception(u"Too short message")
         if sender is None:
             sender = self.defaultSender
-        if not self.checkSender(sender):
+        if not self._checkSender(sender):
             raise Exception(u"Invalid sender name or phone")
+        if not (send_datetime is None):
+            send_datetime = self._checkDate(send_datetime)
         message = {
-            u"id": random.choice(range(1, 9999)),
+            u"id": sms_id,
             u"from": sender,
             u"to": phone,
-            u"text": body
+            u"text": body,
+            u"send_datetime": send_datetime,
         }
         self.messages.append(message)
-        return True
+        return self
 
-    def batchsend(self, phones, body, sender=None, resetQueue=True):
-        if phones is None:
+    def batchSend(self, queue, body, sender=None):
+        if queue is None:
             raise Exception(u"No phones in list")
-        if resetQueue:
-            self.messages = []
-        for phone in phones:
-            self.addSMS(phone, body, sender)
+        # Чистим очередь по умолчанию
+        self.resetQueue()
+        for sms_id, phone in queue:
+            self.addSMS(sms_id, phone, body, sender)
 
     def callServer(self, data):
         request = urllib2.Request(
@@ -129,3 +139,12 @@ class Sender:
             u"inbound": True
         }
         return self.callServer(data)
+
+    def _checkDate(self, datetime = None):
+        # Param is timestamp
+        if re.match(r'\d{2}:\d{2}:\d{2}', datetime):
+            return datetime
+        #GMT время отложенной отправки сообщения,
+        #в формате YYYY-MM-DD HH:MM:SS или в UNIXSTAMP
+        rxPattern = re.compile(r'^$', re.VERBOSE)
+        return None
