@@ -141,10 +141,7 @@ class Sender:
         return self.callServer(data)
 
     def _checkDate(self, datetime = None):
-        # Param is timestamp
-        if re.match(r'\d{2}:\d{2}:\d{2}', datetime):
+        #в формате YYYY-MM-DD HH:MM:SS
+        if re.match(r'\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}', datetime):
             return datetime
-        #GMT время отложенной отправки сообщения,
-        #в формате YYYY-MM-DD HH:MM:SS или в UNIXSTAMP
-        rxPattern = re.compile(r'^$', re.VERBOSE)
         return None
