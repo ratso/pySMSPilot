@@ -19,7 +19,7 @@ Pilot = smspilot.Sender(api)
 
 3. Добавим одно или несколько sms вот так:
 
-Pilot.addSMS([локальный_id_сообщения_int],"Номер телефона", u"SMS сообщение", u"Imya Otpravitelya")
+Pilot.addSMS([локальный__id__сообщения_int],"Номер телефона", u"SMS сообщение", u"Imya Otpravitelya")
 
 **Note:** номер телефона должен быть в формате 7xxxxxxxxxx
 
