@@ -1,0 +1,8 @@
+.gitignore
+README.md
+LICENSE.txt
+setup.py
+pySMSPilot/__init__.py
+pySMSPilot/sender.py
+pySMSPilot/test/__init__.py
+pySMSPilot/test/test_sender.py
