@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 from distutils.core import setup
 
@@ -9,8 +9,8 @@ setup(
     description='API wrapper for SMSPilot sms gateway <http://www.smspilot.ru>',
     author='Stanislav Sokolov aka Ratso',
     author_email='sokolst@gmail.com',
-	license='LICENSE.txt',
+    license='LICENSE.txt',
     url='https://github.com/ratso/pySMSPilot',
-	long_description=open('README.md').read(),
-    packages = ['pySMSPilot', 'pySMSPilot.test'],
+    long_description=open('README.md').read(),
+    packages=['pySMSPilot', 'pySMSPilot.test'],
 )
