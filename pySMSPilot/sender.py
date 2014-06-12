@@ -21,9 +21,6 @@ class Sender:
     }
     messages = []
 
-    def __new__(self):
-        self.messages = []
-
     def __init__(self, api_key):
         if not api_key:
             raise Exception(u"API Key is not defined")
@@ -32,7 +29,7 @@ class Sender:
 
     def resetQueue(self):
         self.messages = []
-        return self;
+        return self
 
     def _checkPhone(self, phone):
         phonePattern = re.compile(r'(^7[0-9]+)$', re.VERBOSE)
