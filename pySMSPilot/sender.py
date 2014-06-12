@@ -9,6 +9,7 @@ v. 1.2
 import json
 import urllib2
 import re
+import datetime
 
 
 class Sender:
@@ -53,7 +54,12 @@ class Sender:
         if not self._checkSender(sender):
             raise Exception(u"Invalid sender name or phone")
         if not (send_datetime is None):
-            send_datetime = self._checkDate(send_datetime)
+            if isinstance(send_datetime, str) or isinstance(send_datetime, unicode):
+                send_datetime = self._checkDate(send_datetime)
+            elif isinstance(send_datetime, datetime.datetime):
+                send_datetime = send_datetime.strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                send_datetime = None
         message = {
             u"id": sms_id,
             u"from": sender,
