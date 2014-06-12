@@ -1,10 +1,10 @@
 # -*- coding: utf-8 *-*
 # Filename: Sender.py
-'''
+"""
 SMSPilot.ru API 2.x Usage Implementation
 by Stanislav Sokolov aka Ratso
 v. 1.2
-'''
+"""
 
 import json
 import urllib2
@@ -31,14 +31,6 @@ class Sender:
     def resetQueue(self):
         self.messages = []
         return self
-
-    def _checkPhone(self, phone):
-        phonePattern = re.compile(r'(^7[0-9]+)$', re.VERBOSE)
-        return phone is not None and phonePattern.search(phone)
-
-    def _checkSender(self, sender):
-        regxPattern = re.compile(r'^[a-zA-Z.\-\d]{3,11}$', re.VERBOSE)
-        return regxPattern.search(sender)
 
     def addSMS(self, sms_id, phone, body, sender=None, send_datetime=None):
         if not isinstance(sms_id, int):
@@ -89,7 +81,7 @@ class Sender:
 
     def send(self):
         if len(self.messages) == 0:
-            raise  Exception(u"No messages to send. Add one first")
+            raise Exception(u"No messages to send. Add one first")
         data = {
             u"apikey": self.api,
             u"send": self.messages
@@ -114,7 +106,7 @@ class Sender:
 
     def checkPacketStatus(self, server_packet_id):
         if not server_packet_id.isdigit():
-            raise  Exception(u"server_packet_id must be integer!")
+            raise Exception(u"server_packet_id must be integer!")
         data = {
             u"apikey": self.api,
             u"check": True,
@@ -143,8 +135,20 @@ class Sender:
         }
         return self.callServer(data)
 
-    def _checkDate(self, datetime = None):
+    @staticmethod
+    def _checkDate(datetime=None):
         #в формате YYYY-MM-DD HH:MM:SS
         if re.match(r'\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}', datetime):
             return datetime
         return None
+
+    @staticmethod
+    def _checkPhone(phone):
+        phonePattern = re.compile(r'(^7[0-9]+)$', re.VERBOSE)
+        return phone is not None and phonePattern.search(phone)
+
+    @staticmethod
+    def _checkSender(sender):
+        regxPattern = re.compile(r'^[a-zA-Z.\-\d]{3,11}$', re.VERBOSE)
+        return regxPattern.search(sender)
+
