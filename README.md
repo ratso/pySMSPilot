@@ -16,18 +16,15 @@ After registering at <http://www.smspilot.ru/>:
 
 * Include it with:
 
-
-    import pySMSPilot
+`import pySMSPilot`
 
 * Initialize class with your API-key:
 
-
-    Pilot = pySMSPilot.sender.Sender(api)
+`Pilot = pySMSPilot.sender.Sender(api)`
 
 * Add some sms messages with command:
 
-
-    Pilot.addSMS([your_local_sms_id_int], "Phone number", u"SMS message", u"Sender name")
+    `Pilot.addSMS([your_local_sms_id_int], "Phone number", u"SMS message", u"Sender name")`
 
 **Note:** phone number must be in format 7xxxxxxxxxx
 
@@ -37,8 +34,7 @@ After registering at <http://www.smspilot.ru/>:
 
 * Run sending command with:
 
-
-    Result = Pilot.send()
+`Result = Pilot.send()`
 
 Object with sending results will be returned. More info look at <http://www.smspilot.ru/apikey.php>
 
@@ -53,32 +49,28 @@ Object with sending results will be returned. More info look at <http://www.smsp
 
 ### Инструкции
 
-* Подключить модуль:
+* Подключить модуль: 
 
-
-    import pySMSPilot
+`import pySMSPilot`
 
 * Инициализировать класс API-ключом:
 
-
-    Pilot = pySMSPilot.sender.Sender(api)
+`Pilot = pySMSPilot.sender.Sender(api)`
 
 * Добавим одно или несколько sms вот так:
 
-
-    Pilot.addSMS([локальный_id_сообщения_int],"Номер телефона", u"SMS сообщение", u"Imya Otpravitelya")
-
-**Note:** номер телефона должен быть в формате 7xxxxxxxxxx
-
-**Note:** Imya Otpravitelya - имя отправителя может содежать только латинские буквы, точки и тире, длинна мин 3 символа, макс - 11
-
-**Note:** возможность изменять имя отправителя может быть ограничена сервисом, подробнее см. условия на сайте http://www.smspilot.ru/
-
-* Запускаем комманду отправки:
+`Pilot.addSMS([локальный_id_сообщения_int],"Номер телефона", u"SMS сообщение", u"Imya Otpravitelya")`
 
 
-    
-    Result = Pilot.send()
+ **Note:** номер телефона должен быть в формате 7xxxxxxxxxx
+
+ **Note:** Imya Otpravitelya - имя отправителя может содежать только латинские буквы, точки и тире, длинна мин 3 символа, макс - 11
+
+ **Note:** возможность изменять имя отправителя может быть ограничена сервисом, подробнее см. условия на сайте http://www.smspilot.ru/
+
+* Запускаем комманду отправки: 
+
+`Result = Pilot.send()`
     
 
 Будет возвращен объект с результатами отправки. Больше информации см. <http://www.smspilot.ru/apikey.php>
