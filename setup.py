@@ -5,7 +5,7 @@ from distutils.core import setup
 
 setup(
     name='PySMSPilot',
-    version='1.2',
+    version='1.3',
     description='API wrapper for SMSPilot sms gateway <http://www.smspilot.ru>',
     author='Stanislav Sokolov aka Ratso',
     author_email='sokolst@gmail.com',
