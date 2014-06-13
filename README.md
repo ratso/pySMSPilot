@@ -15,11 +15,11 @@ Now available at PyPI. You can install it by running: pip install pySMSPilot
 After registering at <http://www.smspilot.ru/>:
 1. Include it with:
 
-import smspilot
+import pySMSPilot
 
-2. Initilize class with your API-key:
+2. Initialize class with your API-key:
 
-Pilot = smspilot.Sender(api)
+Pilot = pySMSPilot.sender.Sender(api)
 
 3. Add some sms messages with command:
 
@@ -50,11 +50,11 @@ Object with sending results will be returned. More info look at <http://www.smsp
 
 1. Подключить модуль:
 
-import smspilot
+import pySMSPilot
 
 2. Инициализировать класс API-ключом:
 
-Pilot = smspilot.Sender(api)
+Pilot = pySMSPilot.sender.Sender(api)
 
 3. Добавим одно или несколько sms вот так:
 
