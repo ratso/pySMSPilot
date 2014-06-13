@@ -32,7 +32,7 @@ class Sender:
         self.messages = []
         return self
 
-    def addSMS(self, sms_id, phone, body, sender=None, send_datetime=None):
+    def addSMS(self, sms_id, phone, body, sender=None, send_datetime=None, ttl=None):
         if not isinstance(sms_id, int):
             raise Exception(u"sms_id must be integer")
         if any(index['id'] == sms_id for index in self.messages):
@@ -59,6 +59,14 @@ class Sender:
             u"text": body,
             u"send_datetime": send_datetime,
         }
+        if ttl:
+            if not isinstance(ttl, int):
+                raise Exception(u"Invalid ttl type, int required")
+            else:
+                if 10 <= ttl <= 1440:
+                    message['ttl'] = ttl
+                else:
+                    raise Exception(u"Invalid ttl value, 10..1440 allowed")
         self.messages.append(message)
         return self
 

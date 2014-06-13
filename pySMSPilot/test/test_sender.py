@@ -47,6 +47,18 @@ class SmspilotTests(unittest.TestCase):
         self.assertEqual(result[u'send'][0][u'to'], u'79201234567')
         self.assertEquals(send_date.strftime("%Y-%m-%d %H:%M:%S"), result[u'send'][0]['send_datetime'])
 
+    def testTTL(self):
+        client = sender.Sender(API)
+        try:
+            client.addSMS(1, '79201234567', u'Happy birthday!', ttl=10)
+            client.addSMS(2, '79201234567', u'Happy birthday!', ttl=1440)
+        except Exception, e:
+            self.fail()
+
+        self.assertRaises(Exception, client.addSMS, 3, '79201234567', u'Happy birthday!', ttl=1441)
+        self.assertRaises(Exception, client.addSMS, 4, '79201234567', u'Happy birthday!', ttl=1)
+        self.assertRaises(Exception, client.addSMS, 5, '79201234567', u'Happy birthday!', ttl="Test")
+
 
     def testMultiSend(self):
         client = sender.Sender(API)
