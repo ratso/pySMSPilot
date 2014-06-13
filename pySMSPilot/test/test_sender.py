@@ -59,6 +59,36 @@ class SmspilotTests(unittest.TestCase):
         self.assertRaises(Exception, client.addSMS, 4, '79201234567', u'Happy birthday!', ttl=1)
         self.assertRaises(Exception, client.addSMS, 5, '79201234567', u'Happy birthday!', ttl="Test")
 
+    def test_callback_request(self):
+        try:
+            client = sender.Sender(API, callback="http://ya.ru/", callback_method="post")
+        except Exception, e:
+            self.fail("Valid callback method but %s" % e.message)
+        client.addSMS(1, '79201234567', u'Some test text')
+        self.assertEqual(client.messages[0][u'callback'], "http://ya.ru/")
+        self.assertEqual(client.messages[0][u'callback_method'], "post")
+        try:
+            client = sender.Sender(API, callback="http://ya.ru/", callback_method="get")
+        except Exception, e:
+            self.fail("Valid callback method but %s" % e.message)
+        client.addSMS(1, '79201234567', u'Some test text')
+        self.assertEqual(client.messages[0][u'callback'], "http://ya.ru/")
+        self.assertEqual(client.messages[0][u'callback_method'], "get")
+
+    def test_callback(self):
+        # set method without url
+        self.assertRaises(Exception, sender.Sender, API, callback_method="post")
+        # set invalid url
+        self.assertRaises(Exception, sender.Sender, API, callback="https://ya.ru/")
+        # set invalid method
+        self.assertRaises(Exception, sender.Sender, API, callback="http://ya.ru/", callback_method="put")
+
+        try:
+            client = sender.Sender(API, callback="http://ya.ru/")
+        except Exception, e:
+            self.fail("Valid callback but %s" % e.message)
+
+
 
     def testMultiSend(self):
         client = sender.Sender(API)

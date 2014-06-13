@@ -22,11 +22,22 @@ class Sender:
     }
     messages = []
 
-    def __init__(self, api_key):
+    def __init__(self, api_key, callback=None, callback_method=None):
         if not api_key:
             raise Exception(u"API Key is not defined")
         self.api = api_key
         self.messages = []
+        if callback:
+            if not self._checkCallback(callback):
+                raise Exception(u"Invalid callback url")
+        self.callback = callback
+        if callback_method:
+            if not self.callback:
+                raise Exception(u"callback method set but callback url is None")
+            if not (callback_method == "post" or callback_method == "get"):
+                raise Exception(u"Callback method %s not allowed" % callback_method)
+        self.callback_method = callback_method
+
 
     def resetQueue(self):
         self.messages = []
@@ -52,6 +63,9 @@ class Sender:
                 send_datetime = send_datetime.strftime("%Y-%m-%d %H:%M:%S")
             else:
                 send_datetime = None
+
+
+
         message = {
             u"id": sms_id,
             u"from": sender,
@@ -59,12 +73,18 @@ class Sender:
             u"text": body,
             u"send_datetime": send_datetime,
         }
+        if self.callback:
+            message[u'callback'] = self.callback
+
+        if self.callback_method:
+            message[u'callback_method'] = self.callback_method
+
         if ttl:
             if not isinstance(ttl, int):
                 raise Exception(u"Invalid ttl type, int required")
             else:
                 if 10 <= ttl <= 1440:
-                    message['ttl'] = ttl
+                    message[u'ttl'] = ttl
                 else:
                     raise Exception(u"Invalid ttl value, 10..1440 allowed")
         self.messages.append(message)
@@ -160,3 +180,8 @@ class Sender:
         regxPattern = re.compile(r'^[a-zA-Z.\-\d]{3,11}$', re.VERBOSE)
         return regxPattern.search(sender)
 
+    @staticmethod
+    def _checkCallback(callback):
+        #fixme: complete check required
+        regexPattern = re.compile(r'^http\://[^\s]*$', re.VERBOSE)
+        return regexPattern.search(callback)
