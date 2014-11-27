@@ -43,6 +43,17 @@ class Sender:
         self.messages = []
         return self
 
+    def build_data(self, *args, **kwargs):
+        """
+        Build API request dictionary
+        """
+        result = dict(apikey=self.api, **kwargs)
+        if len(args) == 1:
+            result.update(args[0])
+        elif len(args) > 1:
+            raise TypeError(u"Only one dict in args")
+        return result
+
     def addSMS(self, sms_id, phone, body, sender=None, send_datetime=None, ttl=None):
         if not isinstance(sms_id, int):
             raise Exception(u"sms_id must be integer")
