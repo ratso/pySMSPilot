@@ -19,7 +19,6 @@ class Sender:
         'Accept': 'text/plain',
         'User-Agent': 'PySMSPilot/1.2 (+https://github.com/ratso/pySMSPilot)'
     }
-    messages = []
 
     def __init__(self, api_key, callback=None, callback_method=None, defaultSender=None):
         if not api_key:
