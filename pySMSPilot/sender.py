@@ -45,7 +45,6 @@ class Sender:
                 raise Exception(u"Callback method %s not allowed" % callback_method)
         self.callback_method = callback_method
 
-
     def resetQueue(self):
         self.messages = []
         return self
@@ -81,8 +80,6 @@ class Sender:
                 send_datetime = send_datetime.strftime("%Y-%m-%d %H:%M:%S")
             else:
                 send_datetime = None
-
-
 
         message = {
             u"id": sms_id,
@@ -183,7 +180,7 @@ class Sender:
 
     @staticmethod
     def _checkDate(datetime=None):
-        #в формате YYYY-MM-DD HH:MM:SS
+        # в формате YYYY-MM-DD HH:MM:SS
         if re.match(r'\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}', datetime):
             return datetime
         return None
@@ -200,6 +197,6 @@ class Sender:
 
     @staticmethod
     def _checkCallback(callback):
-        #fixme: complete check required
+        # fixme: complete check required
         regexPattern = re.compile(r'^http\://[^\s]*$', re.VERBOSE)
         return regexPattern.search(callback)
