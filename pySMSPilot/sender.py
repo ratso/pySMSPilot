@@ -3,7 +3,7 @@
 """
 SMSPilot.ru API 2.x Usage Implementation
 by Stanislav Sokolov aka Ratso
-v. 1.2
+v. 1.3.1
 """
 
 import json
