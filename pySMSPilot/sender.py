@@ -124,10 +124,7 @@ class Sender:
     def send(self):
         if len(self.messages) == 0:
             raise Exception(u"No messages to send. Add one first")
-        data = {
-            u"apikey": self.api,
-            u"send": self.messages
-        }
+        data = self.build_data(send=self.messages)
         Result = self.callServer(data)
         self.messages = []
         return Result
@@ -139,42 +136,25 @@ class Sender:
         for server_id in server_ids:
             if isinstance(server_id, int):
                 check_ids.append({u"server_id": server_id})
-
-        data = {
-            u"apikey": self.api,
-            u"check": check_ids
-        }
+        data = self.build_data(check=check_ids)
         return self.callServer(data)
 
     def checkPacketStatus(self, server_packet_id):
         if not server_packet_id.isdigit():
             raise Exception(u"server_packet_id must be integer!")
-        data = {
-            u"apikey": self.api,
-            u"check": True,
-            u"server_packet_id": server_packet_id
-        }
+        data = self.build_data(check=True, server_packet_id=server_packet_id)
         return self.callServer(data)
 
     def checkBalance(self):
-        data = {
-            u"apikey": self.api,
-            u"balance": True
-        }
+        data = self.build_data(balance=True)
         return self.callServer(data)
 
     def userinfo(self):
-        data = {
-            u"apikey": self.api,
-            u"info": True
-        }
+        data = self.build_data(info=True)
         return self.callServer(data)
 
     def getInbox(self):
-        data = {
-            u"apikey": self.api,
-            u"inbound": True
-        }
+        data = self.build_data(inbound=True)
         return self.callServer(data)
 
     @staticmethod
