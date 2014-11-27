@@ -118,16 +118,16 @@ class Sender:
             json.dumps(data),
             headers=self.headers
         )
-        Result = urllib2.urlopen(request)
-        return json.loads(Result.read())
+        result = urllib2.urlopen(request)
+        return json.loads(result.read())
 
     def send(self):
         if len(self.messages) == 0:
             raise Exception(u"No messages to send. Add one first")
         data = self.build_data(send=self.messages)
-        Result = self.callServer(data)
+        result = self.callServer(data)
         self.messages = []
-        return Result
+        return result
 
     def checkStatus(self, server_ids):
         if server_ids is None:
