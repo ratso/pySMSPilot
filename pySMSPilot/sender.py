@@ -14,7 +14,6 @@ import datetime
 
 class Sender:
     service_url = u"http://smspilot.ru/api2.php"
-    defaultSender = u"Friend"
     headers = {
         'Content-type': 'application/json',
         'Accept': 'text/plain',
@@ -22,11 +21,19 @@ class Sender:
     }
     messages = []
 
-    def __init__(self, api_key, callback=None, callback_method=None):
+    def __init__(self, api_key, callback=None, callback_method=None, defaultSender=None):
         if not api_key:
             raise Exception(u"API Key is not defined")
         self.api = api_key
         self.messages = []
+
+        if defaultSender is None:
+            self.defaultSender = u"internet"
+        else:
+            if not self._checkSender(defaultSender):
+                raise Exception(u"Invalid sender name or phone")
+            self.defaultSender = defaultSender
+
         if callback:
             if not self._checkCallback(callback):
                 raise Exception(u"Invalid callback url")
