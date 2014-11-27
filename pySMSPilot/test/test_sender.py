@@ -98,6 +98,11 @@ class SmspilotTests(unittest.TestCase):
         self.assertEqual(client.messages[0][u'callback'], "http://ya.ru/")
         self.assertEqual(client.messages[0][u'callback_method'], "get")
 
+    def test_balance(self):
+        client = sender.Sender(API)
+        result = client.checkBalance()
+        self.assertIsInstance(result[u'balance'], int)
+
     def test_callback(self):
         # set method without url
         self.assertRaises(Exception, sender.Sender, API, callback_method="post")
