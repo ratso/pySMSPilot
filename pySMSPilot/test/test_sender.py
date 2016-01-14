@@ -15,8 +15,8 @@ class SmspilotTests(unittest.TestCase):
     def testSender(self):
         client = sender.Sender(API)
         self.assertEqual(client.defaultSender, u"internet")
-        client = sender.Sender(API, defaultSender=u"test")
-        self.assertEqual(client.defaultSender, u"test")
+        client = sender.Sender(API, defaultSender=u"INFORM")
+        self.assertEqual(client.defaultSender, u"INFORM")
         self.assertRaises(Exception, sender.Sender, API, defaultSender=u"1234556789012345667890")
 
     def test_build_data(self):
@@ -36,9 +36,10 @@ class SmspilotTests(unittest.TestCase):
 
     def testSingleSend(self):
         client = sender.Sender(API)
-        client.defaultSender = "test"
+        client.defaultSender = "INFORM"
         client.addSMS(1, TEST_PHONE, u'Some text body')
         result = client.send()
+        print result
         self.assertEqual(result[u'send'][0][u'text'], u'Some text body')
         self.assertEqual(result[u'send'][0][u'to'], TEST_PHONE)
 
