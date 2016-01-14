@@ -16,7 +16,7 @@ After registering at <http://www.smspilot.ru/>:
 
 * Include it with:
 
-`import pySMSPilot`
+`import pySMSPilot.sender`
 
 * Initialize class with your API-key:
 
@@ -51,7 +51,7 @@ Object with sending results will be returned. More info look at <http://www.smsp
 
 * Подключить модуль: 
 
-`import pySMSPilot`
+`import pySMSPilot.sender`
 
 * Инициализировать класс API-ключом:
 
@@ -74,5 +74,19 @@ Object with sending results will be returned. More info look at <http://www.smsp
     
 
 Будет возвращен объект с результатами отправки. Больше информации см. <http://www.smspilot.ru/apikey.php>
+
+* Запрос баланса:
+{u'balance': 260.53}
+В попугаях (в штуках?) _оставлено для совместимости, возможность не документирована_
+
+`Pilot.checkBalance()`
+
+В рублях:
+
+`Result = Pilot.checkBalance('rur')`
+
+Возвращает объект с результатами запроса:
+
+`{u'balance': 260.53}`
 
 Copyright (c) 2013 by Stanislav Sokolov aka Ratso

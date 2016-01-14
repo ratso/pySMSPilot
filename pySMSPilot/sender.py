@@ -3,7 +3,7 @@
 """
 SMSPilot.ru API 2.x Usage Implementation
 by Stanislav Sokolov aka Ratso
-v. 1.3.1
+v. 1.3.2
 """
 
 import json
@@ -145,8 +145,8 @@ class Sender:
         data = self.build_data(check=True, server_packet_id=server_packet_id)
         return self.callServer(data)
 
-    def checkBalance(self):
-        data = self.build_data(balance=True)
+    def checkBalance(self, value=True):
+        data = self.build_data(balance=value)
         return self.callServer(data)
 
     def userinfo(self):
