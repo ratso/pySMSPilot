@@ -14,7 +14,7 @@ class SmspilotTests(unittest.TestCase):
 
     def testSingleSend(self):
         client = sender.Sender(API)
-        client.addSMS(1, '79201234567', u'Some text body')
+        client.add_sms(1, '79201234567', u'Some text body')
         result = client.send()
         self.assertEqual(result[u'send'][0][u'text'], u'Some text body')
         self.assertEqual(result[u'send'][0][u'to'], u'79201234567')
@@ -22,18 +22,18 @@ class SmspilotTests(unittest.TestCase):
     def testInvalidMessageId(self):
         client = sender.Sender(API)
         try:
-            client.addSMS(1, '79201234567', u'Some test text')
+            client.add_sms(1, '79201234567', u'Some test text')
         except Exception as inst:
             self.assertEqual(inst.message, u'SMS with this id already queried')
         try:
-            client.addSMS('invalid_str_id', '79201234567', u'Some test text')
+            client.add_sms('invalid_str_id', '79201234567', u'Some test text')
         except Exception as inst:
             self.assertEqual(inst.message, u'sms_id must be integer')
 
     def testInvalidSendTime(self):
         client = sender.Sender(API)
         try:
-            client.addSMS(1, '79201234567', u'Happy birthday!', None, '20.12.2013')
+            client.add_sms(1, '79201234567', u'Happy birthday!', None, '20.12.2013')
         except Exception as inst:
             self.assertEqual(inst.message, u'Invalid datetime! Must be GMT timestamp or YYYY-MM-DD HH:MM:SS')
 
@@ -41,7 +41,7 @@ class SmspilotTests(unittest.TestCase):
         client = sender.Sender(API)
         import datetime
         send_date = datetime.datetime.now()+ datetime.timedelta(hours=1)
-        client.addSMS(1, '79201234567', u'Happy birthday!', None, send_date)
+        client.add_sms(1, '79201234567', u'Happy birthday!', None, send_date)
         result = client.send()
         self.assertEqual(result[u'send'][0][u'text'], u'Happy birthday!')
         self.assertEqual(result[u'send'][0][u'to'], u'79201234567')
@@ -50,28 +50,28 @@ class SmspilotTests(unittest.TestCase):
     def testTTL(self):
         client = sender.Sender(API)
         try:
-            client.addSMS(1, '79201234567', u'Happy birthday!', ttl=10)
-            client.addSMS(2, '79201234567', u'Happy birthday!', ttl=1440)
+            client.add_sms(1, '79201234567', u'Happy birthday!', ttl=10)
+            client.add_sms(2, '79201234567', u'Happy birthday!', ttl=1440)
         except Exception, e:
             self.fail()
 
-        self.assertRaises(Exception, client.addSMS, 3, '79201234567', u'Happy birthday!', ttl=1441)
-        self.assertRaises(Exception, client.addSMS, 4, '79201234567', u'Happy birthday!', ttl=1)
-        self.assertRaises(Exception, client.addSMS, 5, '79201234567', u'Happy birthday!', ttl="Test")
+        self.assertRaises(Exception, client.add_sms, 3, '79201234567', u'Happy birthday!', ttl=1441)
+        self.assertRaises(Exception, client.add_sms, 4, '79201234567', u'Happy birthday!', ttl=1)
+        self.assertRaises(Exception, client.add_sms, 5, '79201234567', u'Happy birthday!', ttl="Test")
 
     def test_callback_request(self):
         try:
             client = sender.Sender(API, callback="http://ya.ru/", callback_method="post")
         except Exception, e:
             self.fail("Valid callback method but %s" % e.message)
-        client.addSMS(1, '79201234567', u'Some test text')
+        client.add_sms(1, '79201234567', u'Some test text')
         self.assertEqual(client.messages[0][u'callback'], "http://ya.ru/")
         self.assertEqual(client.messages[0][u'callback_method'], "post")
         try:
             client = sender.Sender(API, callback="http://ya.ru/", callback_method="get")
         except Exception, e:
             self.fail("Valid callback method but %s" % e.message)
-        client.addSMS(1, '79201234567', u'Some test text')
+        client.add_sms(1, '79201234567', u'Some test text')
         self.assertEqual(client.messages[0][u'callback'], "http://ya.ru/")
         self.assertEqual(client.messages[0][u'callback_method'], "get")
 
@@ -92,8 +92,8 @@ class SmspilotTests(unittest.TestCase):
 
     def testMultiSend(self):
         client = sender.Sender(API)
-        client.addSMS(1, '79201234567', u'Some test text')
-        client.addSMS(2, '79201234568', u'Some test text')
+        client.add_sms(1, '79201234567', u'Some test text')
+        client.add_sms(2, '79201234568', u'Some test text')
         result = client.send()
         self.assertEqual(result[u'send'][0][u'to'], '79201234567')
         self.assertEqual(result[u'send'][1][u'to'], '79201234568')

@@ -39,11 +39,11 @@ class Sender:
         self.callback_method = callback_method
 
 
-    def resetQueue(self):
+    def reset_queue(self):
         self.messages = []
         return self
 
-    def addSMS(self, sms_id, phone, body, sender=None, send_datetime=None, ttl=None):
+    def add_sms(self, sms_id, phone, body, sender=None, send_datetime=None, ttl=None):
         if not isinstance(sms_id, int):
             raise Exception(u"sms_id must be integer")
         if any(index['id'] == sms_id for index in self.messages):
@@ -63,8 +63,6 @@ class Sender:
                 send_datetime = send_datetime.strftime("%Y-%m-%d %H:%M:%S")
             else:
                 send_datetime = None
-
-
 
         message = {
             u"id": sms_id,
@@ -90,13 +88,13 @@ class Sender:
         self.messages.append(message)
         return self
 
-    def batchSend(self, queue, body, sender=None):
+    def batch_send(self, queue, body, sender=None):
         if queue is None:
             raise Exception(u"No phones in list")
         # Чистим очередь по умолчанию
-        self.resetQueue()
+        self.reset_queue()
         for sms_id, phone in queue:
-            self.addSMS(sms_id, phone, body, sender)
+            self.add_sms(sms_id, phone, body, sender)
 
     def callServer(self, data):
         request = urllib2.Request(

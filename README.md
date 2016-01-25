@@ -24,7 +24,7 @@ After registering at <http://www.smspilot.ru/>:
 
 * Add some sms messages with command:
 
-    `Pilot.addSMS([your_local_sms_id_int], "Phone number", u"SMS message", u"Sender name")`
+    `Pilot.add_sms([your_local_sms_id_int], "Phone number", u"SMS message", u"Sender name")`
 
 **Note:** phone number must be in format 7xxxxxxxxxx
 
@@ -59,7 +59,7 @@ Object with sending results will be returned. More info look at <http://www.smsp
 
 * Добавим одно или несколько sms вот так:
 
-`Pilot.addSMS([локальный_id_сообщения_int],"Номер телефона", u"SMS сообщение", u"Imya Otpravitelya")`
+`Pilot.add_sms([локальный_id_сообщения_int],"Номер телефона", u"SMS сообщение", u"Imya Otpravitelya")`
 
 
  **Note:** номер телефона должен быть в формате 7xxxxxxxxxx
@@ -75,4 +75,4 @@ Object with sending results will be returned. More info look at <http://www.smsp
 
 Будет возвращен объект с результатами отправки. Больше информации см. <http://www.smspilot.ru/apikey.php>
 
-Copyright (c) 2013 by Stanislav Sokolov aka Ratso
+Copyright (c) 2016 by Stanislav Sokolov aka Ratso
