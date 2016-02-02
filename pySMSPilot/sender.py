@@ -3,7 +3,7 @@
 """
 SMSPilot.ru API 2.x Usage Implementation
 by Stanislav Sokolov aka Ratso
-v. 1.2
+v. 1.3.2
 """
 
 import json
@@ -14,19 +14,25 @@ import datetime
 
 class Sender:
     service_url = u"http://smspilot.ru/api2.php"
-    defaultSender = u"Friend"
     headers = {
         'Content-type': 'application/json',
         'Accept': 'text/plain',
         'User-Agent': 'PySMSPilot/1.2 (+https://github.com/ratso/pySMSPilot)'
     }
-    messages = []
 
-    def __init__(self, api_key, callback=None, callback_method=None):
+    def __init__(self, api_key, callback=None, callback_method=None, defaultSender=None):
         if not api_key:
             raise Exception(u"API Key is not defined")
         self.api = api_key
         self.messages = []
+
+        if defaultSender is None:
+            self.defaultSender = u"internet"
+        else:
+            if not self._checkSender(defaultSender):
+                raise Exception(u"Invalid sender name or phone")
+            self.defaultSender = defaultSender
+
         if callback:
             if not self._checkCallback(callback):
                 raise Exception(u"Invalid callback url")
@@ -38,12 +44,22 @@ class Sender:
                 raise Exception(u"Callback method %s not allowed" % callback_method)
         self.callback_method = callback_method
 
-
     def reset_queue(self):
         self.messages = []
         return self
 
-    def add_sms(self, sms_id, phone, body, sender=None, send_datetime=None, ttl=None):
+    def build_data(self, *args, **kwargs):
+        """
+        Build API request dictionary
+        """
+        result = dict(apikey=self.api, **kwargs)
+        if len(args) == 1:
+            result.update(args[0])
+        elif len(args) > 1:
+            raise TypeError(u"Only one dict in args")
+        return result
+
+    def addSMS(self, sms_id, phone, body, sender=None, send_datetime=None, ttl=None):
         if not isinstance(sms_id, int):
             raise Exception(u"sms_id must be integer")
         if any(index['id'] == sms_id for index in self.messages):
@@ -102,19 +118,16 @@ class Sender:
             json.dumps(data),
             headers=self.headers
         )
-        Result = urllib2.urlopen(request)
-        return json.loads(Result.read())
+        result = urllib2.urlopen(request)
+        return json.loads(result.read())
 
     def send(self):
         if len(self.messages) == 0:
             raise Exception(u"No messages to send. Add one first")
-        data = {
-            u"apikey": self.api,
-            u"send": self.messages
-        }
-        Result = self.callServer(data)
+        data = self.build_data(send=self.messages)
+        result = self.callServer(data)
         self.messages = []
-        return Result
+        return result
 
     def checkStatus(self, server_ids):
         if server_ids is None:
@@ -123,47 +136,30 @@ class Sender:
         for server_id in server_ids:
             if isinstance(server_id, int):
                 check_ids.append({u"server_id": server_id})
-
-        data = {
-            u"apikey": self.api,
-            u"check": check_ids
-        }
+        data = self.build_data(check=check_ids)
         return self.callServer(data)
 
     def checkPacketStatus(self, server_packet_id):
         if not server_packet_id.isdigit():
             raise Exception(u"server_packet_id must be integer!")
-        data = {
-            u"apikey": self.api,
-            u"check": True,
-            u"server_packet_id": server_packet_id
-        }
+        data = self.build_data(check=True, server_packet_id=server_packet_id)
         return self.callServer(data)
 
-    def checkBalance(self):
-        data = {
-            u"apikey": self.api,
-            u"balance": True
-        }
+    def checkBalance(self, value=True):
+        data = self.build_data(balance=value)
         return self.callServer(data)
 
     def userinfo(self):
-        data = {
-            u"apikey": self.api,
-            u"info": True
-        }
+        data = self.build_data(info=True)
         return self.callServer(data)
 
     def getInbox(self):
-        data = {
-            u"apikey": self.api,
-            u"inbound": True
-        }
+        data = self.build_data(inbound=True)
         return self.callServer(data)
 
     @staticmethod
     def _checkDate(datetime=None):
-        #в формате YYYY-MM-DD HH:MM:SS
+        # в формате YYYY-MM-DD HH:MM:SS
         if re.match(r'\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}', datetime):
             return datetime
         return None
@@ -180,6 +176,6 @@ class Sender:
 
     @staticmethod
     def _checkCallback(callback):
-        #fixme: complete check required
+        # fixme: complete check required
         regexPattern = re.compile(r'^http\://[^\s]*$', re.VERBOSE)
         return regexPattern.search(callback)

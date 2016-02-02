@@ -5,75 +5,104 @@ from pySMSPilot import sender
 
 # emulator api key, no real sending
 API = u'XXXXXXXXXXXXYYYYYYYYYYYYZZZZZZZZXXXXXXXXXXXXYYYYYYYYYYYYZZZZZZZZ'
+TEST_PHONE = u"79101234567"
 
 
 class SmspilotTests(unittest.TestCase):
-
     def testNoApi(self):
         self.assertRaises(Exception, lambda _: sender.Sender(False))
 
+    def testSender(self):
+        client = sender.Sender(API)
+        self.assertEqual(client.defaultSender, u"internet")
+        client = sender.Sender(API, defaultSender=u"INFORM")
+        self.assertEqual(client.defaultSender, u"INFORM")
+        self.assertRaises(Exception, sender.Sender, API, defaultSender=u"1234556789012345667890")
+
+    def test_build_data(self):
+        client = sender.Sender(API)
+        data = client.build_data(test="ok")
+        self.assertEqual(API, data["apikey"])
+        self.assertEqual("ok", data["test"])
+
+        data = client.build_data({"test": "ok"})
+        self.assertEqual(API, data["apikey"])
+        self.assertEqual("ok", data["test"])
+
+        data = client.build_data({"test": "ok"}, test2="ook")
+        self.assertEqual(API, data["apikey"])
+        self.assertEqual("ok", data["test"])
+        self.assertEqual("ook", data["test2"])
+
     def testSingleSend(self):
         client = sender.Sender(API)
-        client.add_sms(1, '79201234567', u'Some text body')
+        client.defaultSender = "INFORM"
+        client.addSMS(1, TEST_PHONE, u'Some text body')
         result = client.send()
+        print result
         self.assertEqual(result[u'send'][0][u'text'], u'Some text body')
-        self.assertEqual(result[u'send'][0][u'to'], u'79201234567')
+        self.assertEqual(result[u'send'][0][u'to'], TEST_PHONE)
 
     def testInvalidMessageId(self):
         client = sender.Sender(API)
         try:
-            client.add_sms(1, '79201234567', u'Some test text')
+            client.addSMS(1, TEST_PHONE, u'Some test text')
         except Exception as inst:
             self.assertEqual(inst.message, u'SMS with this id already queried')
         try:
-            client.add_sms('invalid_str_id', '79201234567', u'Some test text')
+            client.addSMS('invalid_str_id', TEST_PHONE, u'Some test text')
         except Exception as inst:
             self.assertEqual(inst.message, u'sms_id must be integer')
 
     def testInvalidSendTime(self):
         client = sender.Sender(API)
         try:
-            client.add_sms(1, '79201234567', u'Happy birthday!', None, '20.12.2013')
+            client.addSMS(1, TEST_PHONE, u'Happy birthday!', None, '20.12.2013')
         except Exception as inst:
             self.assertEqual(inst.message, u'Invalid datetime! Must be GMT timestamp or YYYY-MM-DD HH:MM:SS')
 
     def testValidDateTimeSendTime(self):
         client = sender.Sender(API)
         import datetime
-        send_date = datetime.datetime.now()+ datetime.timedelta(hours=1)
-        client.add_sms(1, '79201234567', u'Happy birthday!', None, send_date)
+        send_date = datetime.datetime.now() + datetime.timedelta(hours=1)
+        client.addSMS(1, TEST_PHONE, u'Happy birthday!', None, send_date)
         result = client.send()
         self.assertEqual(result[u'send'][0][u'text'], u'Happy birthday!')
-        self.assertEqual(result[u'send'][0][u'to'], u'79201234567')
+        self.assertEqual(result[u'send'][0][u'to'], TEST_PHONE)
         self.assertEquals(send_date.strftime("%Y-%m-%d %H:%M:%S"), result[u'send'][0]['send_datetime'])
 
     def testTTL(self):
         client = sender.Sender(API)
         try:
-            client.add_sms(1, '79201234567', u'Happy birthday!', ttl=10)
-            client.add_sms(2, '79201234567', u'Happy birthday!', ttl=1440)
+            client.addSMS(1, TEST_PHONE, u'Happy birthday!', ttl=10)
+            client.addSMS(2, TEST_PHONE, u'Happy birthday!', ttl=1440)
         except Exception, e:
             self.fail()
 
-        self.assertRaises(Exception, client.add_sms, 3, '79201234567', u'Happy birthday!', ttl=1441)
-        self.assertRaises(Exception, client.add_sms, 4, '79201234567', u'Happy birthday!', ttl=1)
-        self.assertRaises(Exception, client.add_sms, 5, '79201234567', u'Happy birthday!', ttl="Test")
+        self.assertRaises(Exception, client.addSMS, 3, TEST_PHONE, u'Happy birthday!', ttl=1441)
+        self.assertRaises(Exception, client.addSMS, 4, TEST_PHONE, u'Happy birthday!', ttl=1)
+        self.assertRaises(Exception, client.addSMS, 5, TEST_PHONE, u'Happy birthday!', ttl="Test")
 
     def test_callback_request(self):
         try:
             client = sender.Sender(API, callback="http://ya.ru/", callback_method="post")
         except Exception, e:
             self.fail("Valid callback method but %s" % e.message)
-        client.add_sms(1, '79201234567', u'Some test text')
+        client.addSMS(1, TEST_PHONE, u'Some test text')
         self.assertEqual(client.messages[0][u'callback'], "http://ya.ru/")
         self.assertEqual(client.messages[0][u'callback_method'], "post")
         try:
             client = sender.Sender(API, callback="http://ya.ru/", callback_method="get")
         except Exception, e:
             self.fail("Valid callback method but %s" % e.message)
-        client.add_sms(1, '79201234567', u'Some test text')
+        client.addSMS(1, TEST_PHONE, u'Some test text')
         self.assertEqual(client.messages[0][u'callback'], "http://ya.ru/")
         self.assertEqual(client.messages[0][u'callback_method'], "get")
+
+    def test_balance(self):
+        client = sender.Sender(API)
+        result = client.checkBalance()
+        self.assertIsInstance(result[u'balance'], int)
 
     def test_callback(self):
         # set method without url
@@ -88,15 +117,13 @@ class SmspilotTests(unittest.TestCase):
         except Exception, e:
             self.fail("Valid callback but %s" % e.message)
 
-
-
     def testMultiSend(self):
         client = sender.Sender(API)
-        client.add_sms(1, '79201234567', u'Some test text')
-        client.add_sms(2, '79201234568', u'Some test text')
+        client.addSMS(1, TEST_PHONE, u'Some test text')
+        client.addSMS(2, TEST_PHONE[:-1]+"5", u'Some test text')
         result = client.send()
-        self.assertEqual(result[u'send'][0][u'to'], '79201234567')
-        self.assertEqual(result[u'send'][1][u'to'], '79201234568')
+        self.assertEqual(result[u'send'][0][u'to'], TEST_PHONE)
+        self.assertEqual(result[u'send'][1][u'to'], TEST_PHONE[:-1]+"5")
         self.assertEqual(result[u'send'][0][u'text'], u'Some test text')
         self.assertEqual(result[u'send'][1][u'text'], u'Some test text')
 
